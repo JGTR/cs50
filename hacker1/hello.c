@@ -1,5 +1,7 @@
 #include <stdio.h>
 
-int main(void){
-    printf("hello world\n");
+int main(void)
+{
+    // a program of this kind requires no comments!
+    printf("hello, world\n");
 }

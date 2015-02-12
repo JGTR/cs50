@@ -1,23 +1,32 @@
+// Jordan Trevino
+
 #include <cs50.h>
 #include <stdio.h>
 #include <math.h>
 
-// The following is indented 2 spaces only out of personal preference.
+// I am using 2 tabs to indent out of preference. 
 
 int longlength(long long n);
 int sumdigits(int digits, long long n);
 int getdigit(long long n);
 bool checkfour(long long n);
 
+// Controls the main flow. 
+
 int main(void)
 {
   printf("Number: ");
   long long num;
   num = GetLongLong();
+  
+  // Get inputs necessary for program. 
+
   int digitlength = longlength(num);
   int relevantsum = sumdigits(digitlength, num);
-  // printf("Sum = %i \n", relevantsum);
   bool startwfour = checkfour(num);
+
+  // Logic to assess whether invalid or the credit card type.
+
   if (relevantsum % 10 == 0)
   {
     switch (digitlength)
@@ -57,7 +66,6 @@ int longlength(long long n)
       n /= 10 ;
       ++count;
   }
-  // printf("count: %i \n", count);
   return count;
 }
 
@@ -70,8 +78,8 @@ int sumdigits(int length, long long longnum)
 
   for(int count = 0; count <= length ; count++)
   {
+    // Splits logic based on whether even or odd to perform different operations.
     digit = getdigit(store);
-    // printf ("digit = %i\n", digit);
     if (count % 2 == 0)
     {
       sum = sum + digit;
@@ -91,17 +99,18 @@ int sumdigits(int length, long long longnum)
       }
     }
     store = store / 10;
-    // printf("store = %llu\n", store);
   }
 
   return sum;
 }
 
+// Gets the units digit from any number
 int getdigit(long long n)
 {
   return n % 10;
 }
 
+// Checks to see if the card starts with 4
 bool checkfour(long long n)
 {
   int x;

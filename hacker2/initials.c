@@ -3,22 +3,38 @@
 #include <cs50.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <string.h>
 
 // I am using 2 tabs to indent out of preference. 
 
-int longlength(long long n);
-int sumdigits(int digits, long long n);
-int getdigit(long long n);
-bool checkfour(long long n);
-
 // Controls the main flow. 
 
-int main(int argc, char* argv[])
+int main(void)
 {
+  // The boolean tells the program whether to print this char or not, depending on whether it follows a space.
+  bool exec = true;
+	string name = GetString();
 
-  for ( int x = 1; x < argc ; x++)
+  // Checks that input is real and not an error.
+  if (name != NULL)
   {
-    printf("%c", toupper(argv[x][0]));
+    for ( int x = 0; x < strlen(name) ; x++)
+    {
+      // Assigns the relevant char to the variable consider .
+      char consider = name[x];
+      // Checks that the program is primed to print the char and that the char is not a space.
+      if ( consider != ' ' && exec == true)
+      {
+        printf("%c", toupper(name[x]));
+        exec = false;
+      }
+      // Branch for when the char is a space.
+      else if (consider == ' ')
+      {
+        // We prepare the program to pick out the first letter after a space.
+        exec = true;
+      }
+    }
+    printf("\n");
   }
-  printf("\n");
 }

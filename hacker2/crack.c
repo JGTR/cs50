@@ -8,50 +8,27 @@
 #include <unistd.h>
 #include <cs50.h>
 
-// Dictionary file to crack passwords
-#define PASSWORDS "/usr/share/dict/words"
+// Dictionary file to crack passwords. For testing: #define PASSWORDS "passtest.txt"
+# define PASSWORDS "/usr/share/dict/words"
 
-// char gettry(int counter);
-
-bool ispassword(char *try, char *pass);
-
-int main(int argc, char *argv[])
+// Exclude a few of the tries if they are too long or have invalid chars.
+bool testvalidity(char *try)
 {
-
-	FILE *tries; // file pointer for tries
-	char try[50]; // store word to try
-	tries = fopen(PASSWORDS, "r"); // Store passwords in file
-	int counter = 1; // keep count of each try
-
-	if (tries == NULL){
-		printf("There was an error loading the file.");
-	}
-
-	// Run through the entire file
-	while (fgets(try, 50, tries) != NULL)
+	if (strlen(try) <= 8 && strchr(try, '\'') == NULL)
 	{
-		strtok(try, "\n");
-		// Stop the program once a match is reached
-		if (ispassword(try, argv[1]))
-		{
-			printf("%s is the right password. \n", try);
-			break;
-		}
-		if (counter % 100 == 0)
-		{
-			printf("%i tries...\n", counter);
-		}
-		counter++;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
+// Define function that can determine if the password matches the cracked try.
 bool ispassword(char *try, char *pass)
 {
-	char charsforsalt[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./";
+	char charsforsalt[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./"; 
 	char salttotry[2];
 	char *crypted;
 
+	// Loop through all possible chars for the two characters of the salt.
 	for(int x = 0; x < 64; x++)
 	{
 		for (int y = 0; y < 64; y++)
@@ -59,8 +36,11 @@ bool ispassword(char *try, char *pass)
 			salttotry[0] = charsforsalt[x];
 			salttotry[1] = charsforsalt[y];
 
-			crypted = crypt(pass, salttotry);
-			if (strcmp(crypted, try) == 0)
+			// Generate a crypted string to compare with the initial usuer input.
+			crypted = crypt(try, salttotry);
+
+			// Compare crypted with initial input.
+			if (strcmp(crypted, pass) == 0)
 			{
 				return true;
 			}
@@ -69,26 +49,46 @@ bool ispassword(char *try, char *pass)
 	return false;
 }
 
+int main(int argc, char *argv[])
+{
 
-// char gettry(int counter)
-// {
-// 	FILE *tries; // file pointer for tries
-// 	char try[50]; // store word to try
+	// file pointer for tries
+	FILE *tries;
+	// store word to try
+	char try[50]; 
+	// Store passwords in file -- it did not work if I tried to take the stream directly...
+	tries = fopen(PASSWORDS, "r");
+	// keep count of each try to give user intermittent updates.
+	int counter = 1;
+	// Determine length of password try
+	bool valid;
 
-// 	tries = fopen(PASSWORDS, "r");
+	// In case the file cannot be found.
+	if (tries == NULL)
+	{
+		printf("There was an error loading the file.");
+	}
 
-// 	if (tries == NULL){
-// 		printf("There was an error loading the file.");
-// 	}
+	// Run through the entire file line by line
+	while (fgets(try, 50, tries) != NULL)
+	{
+		// Removes line break characters from the password to try
+		strtok(try, "\n");
+		valid = testvalidity(try);
+		// Stop the program once a match is reached
+		if (valid && ispassword(try, argv[1]))
+		{
+			printf("%s is the right password. \n", try);
+			break;
+		}
+		if (counter % 100 == 0)
+		{
+			printf("%i tries...\n", counter);
+			printf("Current try: %s \n", try);
+		}
+		counter++;
+	}
+	return 0;
+}
 
-// 	if (fgets(try, 50, tries) != NULL)
-// 	{
-// 		fclose(tries);
-// 		return try;
-// 	}
-// 	else 
-// 	{
-// 		return NULL;
-// 	}
-
-// }
+// I couldn't figure out pointers well enough to break down the above into smaller functions, which was my goal.

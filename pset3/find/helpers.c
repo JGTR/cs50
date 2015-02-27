@@ -26,14 +26,7 @@ bool search(int value, int values[], int n)
     }
     else 
     {
-		if (binsearch(value, values, lower, upper))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+  		return binsearch(value, values, lower, upper);
     }
 }
 
@@ -67,41 +60,25 @@ void sort(int values[], int n)
 
 bool binsearch(int value, int values[], int lower, int upper)
 {
-	printf("lower: %i and upper: %i\n", lower, upper);
-	if (lower > upper)
-	{
-		return false;
-	}
-	else if ( lower == upper)
-	{
-		if(values[upper] == value)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	else if ( lower < upper )
-	{
-		int try = (upper + lower) / 2;
-		printf("try: %i\n", try);
-		int tryvalue = values[try];
+	int try = (upper + lower) / 2; // Sets the index of comparison between the two anchor indexes
+	int tryvalue = values[try]; // Gets the value at the index of comparison
+  bool answer = false; // Initializes the answer boolean to be false, pending change to true
 
+  // We make sure that the bounds make sense for the operation
+	if ( lower <= upper )
+	{
 		if (tryvalue == value)
 		{
-			return true;
+			answer = true; // If we find the value, we set answer to true
 		}
-		// go right branch
-		else if (tryvalue < value) 
+		else if (tryvalue < value) // go right branch
 		{
-			binsearch(value, values, try + 1, upper);
+			answer = binsearch(value, values, try + 1, upper); // We need to avoid a perpetual loop by moving the average further right with the +1
 		}
-		// go left branch
-		else if ( tryvalue > value) {
-			binsearch(value, values, lower, try - 1);
+		else if ( tryvalue > value) // go left branch
+    {
+			answer = binsearch(value, values, lower, try - 1); // We need to avoid a perpetual loop by moving the average further left with the -1
 		}
 	}
-	return false;
+  return answer;
 }

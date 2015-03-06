@@ -1,19 +1,69 @@
-0.  TODO
-1.  TODO
-2.  TODO
-3.  TODO
-4.  TODO
-5.  TODO
-6.  TODO
-7.  TODO
-8.  TODO
-9.  TODO
-10. TODO
-11. TODO
-12. TODO
-13. TODO
-14. TODO
-15. TODO
-16. TODO
-17. TODO
-18. TODO
+0.  How many different colors does each format support?
+	BMP: 4,294,967,296 colors.
+	GIF: 256 colors.
+	JPEG: 16 million
+	PNG: 16 million
+
+1. Which of the formats supports animation? 
+Gif supports animation.
+
+2. What’s the difference between lossy and lossless compression?
+Lossy compression looses information in the compression. Lossless does not, and can therefore be reversed.
+
+3. Which of these formats is lossy-compressed?
+JPEG is lossy compressed.
+
+4. What happens, technically speaking, when a file is deleted on a FAT file system?
+When a file is deleted, the first character of the cluster is replaced by the of 4 hexadecimal digits are replaced with "0xe5" to signal deletion. The rest of the data remains intact. 
+
+5. What can someone like you do to ensure (with high probability) that files you delete cannot be recovered?
+Instead of merely replacing the first character to signal deletion, you could overwrite the entire file with randomized characters so that it is not recoverable.
+
+6. What’s stdint.h?
+This is a header file that provides access to several functions related to integer standards, such as uint8_t, uint32_t, int32_t, and uint16_t . These functions specify the exact width of integers. These functions allow code to be more portable by setting widths dependent on the processor targets (whether 32 bit or 64 bit, for example).
+
+7. What’s the point of using uint8_t, uint32_t, int32_t, and uint16_t in a program?
+These functions are a cross-platform implementation of a standard data type. uint8_t is an unsigned int of 8 bits, uint32_t is an unsigned long long, int32_t is a signed long long, and a uint16_t is an unsigned 16 bit int.
+
+8. How many bytes is a BYTE, a DWORD, a LONG, and a WORD, respectively? (Assume a 32-bit architecture like the CS50 Appliance.)
+Byte: 1
+DWORD: 4
+LONG: 4
+WORD: 2
+
+9. What (in ASCII, decimal, or hexadecimal) must the first two bytes of any BMP file be? (Leading bytes used to identify file formats (with high probability) are generally called "magic numbers.)"
+The first two bytes specify the file is a bitmap with the words "BM", or the hex 0x4D42 .
+
+10. What’s the difference between bfSize and biSize?
+bfSize describes the entire file size in bytes, whereas biSize is the size of BITMAPINFOHEADER in bytes.
+
+11. What does it mean if biHeight is negative?
+Negative biHeight means the bitmap is is a top-down DIB with the origin at the upper left corner.
+
+12. What field in BITMAPINFOHEADER specifies the BMP’s color depth (i.e., bits per pixel)?
+biBitCount .
+
+13. Why might fopen return NULL in copy.c:37?
+fopen will return null if it cannot open the file. This can happen if there is not enough memory or the file cannot be found.
+
+14. Why is the third argument to fread always 1 in our code?
+The third argument determines the number of elements fread will read. So this argument is always 1 because we are always reading one file.
+
+15. What value does copy.c:70 assign padding if bi.biWidth is 3?
+1
+
+16. What does fseek do?
+This is the code excerpt:
+```{c}
+// skip over padding, if any
+        fseek(inptr, padding, SEEK_CUR);
+```
+The declaration is: int fseek(FILE *stream, long int offset, int whence)
+
+The code above skips the padding in the inptr file, and adds this to the current pointer position as determined by SEEK_CUR, thereby advancing the program's place in the file.
+
+17. What is SEEK_CUR?
+SEEK_CUR is an option used in fseek to set the offset relative to the current pointer position.
+
+18. Whodunit?
+

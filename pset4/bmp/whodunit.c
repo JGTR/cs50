@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
             // read RGB triple from infile
             fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
 
-            // create a white color
+            // create a white color struct
             RGBTRIPLE white;
             white.rgbtBlue = 0xff;
             white.rgbtGreen = 0xff;

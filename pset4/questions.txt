@@ -66,4 +66,5 @@ The code above skips the padding in the inptr file, and adds this to the current
 SEEK_CUR is an option used in fseek to set the offset relative to the current pointer position.
 
 18. Whodunit?
+Someone who looks suspiciously like Rob Bowden!
 

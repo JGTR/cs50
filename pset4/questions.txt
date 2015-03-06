@@ -53,6 +53,8 @@ The third argument determines the number of elements fread will read. So this ar
 1
 
 16. What does fseek do?
+fseek moves the file position indicator.
+
 This is the code excerpt:
 ```{c}
 // skip over padding, if any

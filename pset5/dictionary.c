@@ -78,6 +78,7 @@ bool load(const char* dictionary)
         {
           trie -> children[26] = alt;
           trie = trie->children[26];
+          free(alt);
         }
       }
       else if (line[x] == '\0')
@@ -90,7 +91,8 @@ bool load(const char* dictionary)
         if (trie -> children[(97 - line[x])] == NULL)
         {
           trie -> children[(97- line[x])] = alt;
-          trie = trie -> children[(97- line[x])] ;
+          trie = trie -> children[(97- line[x])];
+          free(alt);
         }
         // printf("%d\n", (line[x] - 97) );
       }

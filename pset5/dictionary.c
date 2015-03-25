@@ -15,7 +15,6 @@
 #include "dictionary.h"
 
 #define NUMOFLETTERS 27
-#define LINELENGTH 50
 #define APOSTROPHE "\'"
 
 typedef struct node
@@ -45,7 +44,7 @@ bool check(const char* word)
  */
 bool load(const char* dictionary)
 {
-  char line[sizeof(char)*LINELENGTH];
+  char line[sizeof(char)*LENGTH];
   struct node *root = createnode();
 
   FILE* dfile = fopen(dictionary, "r");
@@ -53,14 +52,17 @@ bool load(const char* dictionary)
     return false;
   }
 
+  int count = 0;
+
   while(fgets(line, sizeof(line), dfile) != NULL)
   {
+
     node *trie = root;
     int size = strlen(line);
     node *alt = createnode();
 
     strtok(line, "\n");
-    printf("%s", line);
+    // printf("%s\n", line);
 
     for(int x = 0; x < size; x++)
     {
@@ -71,12 +73,19 @@ bool load(const char* dictionary)
       else
       {
         trie -> children[25 - (97 - line[x])] = alt;
+        // printf("%d\n", (line[x] - 97) );
+      }
+
+      if (line[x] == '\0'){
+        trie -> word = true;
+        count++;
       }
       trie = alt;
     } 
   }
 
-
+  printf("%d\n", count);
+  fclose(dfile);
   return true;
 }
 

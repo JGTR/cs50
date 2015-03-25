@@ -56,7 +56,7 @@ bool load(const char* dictionary)
 
   FILE* dfile = fopen(dictionary, "r");
 
-  while(fgets(line, 40, dfile) != NULL)
+  while(fgets(line, sizeof(line), dfile) != NULL)
   {
     node *trie = root;
 

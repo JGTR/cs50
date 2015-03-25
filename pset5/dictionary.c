@@ -54,8 +54,7 @@ bool load(const char* dictionary)
   struct node *root = createnode(0);
   // struct node *trav;
 
-  FILE *dfile;
-  dfile = fopen(dictionary, "r");
+  FILE* dfile = fopen(dictionary, "r");
 
   while(fgets(line, 40, dfile) != NULL)
   {

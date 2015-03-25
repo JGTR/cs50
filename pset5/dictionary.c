@@ -24,6 +24,13 @@ typedef struct node
   }
 node;
 
+struct node* createnode(void)
+{
+  struct node* root = malloc(sizeof(struct node));
+  memset(root, 0, sizeof(struct node));
+  return root;
+}
+
 /**
  * Returns true if word is in dictionary else false.
  */
@@ -39,7 +46,7 @@ bool check(const char* word)
 bool load(const char* dictionary)
 {
   char line[sizeof(char)*LENGTH];
-  struct node *root = malloc(sizeof(struct node));
+  struct node *root = createnode();
 
   FILE* dfile = fopen(dictionary, "r");
 
@@ -54,7 +61,7 @@ bool load(const char* dictionary)
 
     node *trie = root;
     int size = strlen(line);
-    node *alt = malloc(sizeof(struct node));
+    node *alt = createnode();
 
     strtok(line, "\n");
     // printf("%s\n", line);

@@ -27,7 +27,10 @@ node;
 struct node* createnode(void)
 {
   struct node* root = malloc(sizeof(struct node));
-  memset(root, 0, sizeof(struct node));
+  for(int x = 0; x < LENGTH; x++ )
+  {
+    root -> children[x] = 0;
+  }
   return root;
 }
 

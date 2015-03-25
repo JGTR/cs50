@@ -26,8 +26,7 @@ node;
 
 struct node* createnode(void)
 {
-  struct node* root = malloc(sizeof(struct node));
-  return root;
+  return malloc(sizeof(struct node));
 }
 
 /**

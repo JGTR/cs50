@@ -70,15 +70,15 @@ bool load(const char* dictionary)
       {
         trie -> children[26] = alt;
       }
-      else
+      else if (line[x] == '\0')
       {
-        trie -> children[25 - (97 - line[x])] = alt;
-        printf("%d\n", 25 - (line[x] - 97) );
-      }
-
-      if (line[x] == '\0'){
         trie -> word = true;
         count++;
+      }
+      else
+      {
+        trie -> children[(97 - line[x])] = alt;
+        // printf("%d\n", (line[x] - 97) );
       }
       trie = alt;
     } 

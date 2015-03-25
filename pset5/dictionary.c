@@ -15,9 +15,7 @@
 #include "dictionary.h"
 
 #define NUMOFLETTERS 27
-
 #define LINELENGTH 50
-
 #define APOSTROPHE "\'"
 
 typedef struct node
@@ -27,10 +25,9 @@ typedef struct node
   }
 node;
 
-struct node* createnode(char newletter)
+struct node* createnode(void)
 {
   struct node* root = malloc(sizeof(struct node));
-
   return root;
 }
 
@@ -48,21 +45,19 @@ bool check(const char* word)
  */
 bool load(const char* dictionary)
 {
-  // char *letters[sizeof(char)*NUMOFLETTERS] = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","\'"};
   char line[sizeof(char)*LINELENGTH];
-
-  struct node *root = createnode(0);
-  // struct node *trav;
+  struct node *root = createnode();
 
   FILE* dfile = fopen(dictionary, "r");
+  if (dfile == NULL){
+    return false;
+  }
 
   while(fgets(line, sizeof(line), dfile) != NULL)
   {
     node *trie = root;
-
     int size = strlen(line);
-
-    node *alt = createnode(0);
+    node *alt = createnode();
 
     strtok(line, "\n");
     printf("%s", line);
@@ -78,21 +73,11 @@ bool load(const char* dictionary)
         trie -> children[25 - (97 - line[x])] = alt;
       }
       trie = alt;
-    }
+    } 
   }
 
 
   return true;
-
-
-		// if (dfile != NULL)
-		// {
-		// 	return true;
-		// }
-		// else
-		// {
-		// 	return false;
-		// }   
 }
 
 /**

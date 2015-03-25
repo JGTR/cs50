@@ -26,10 +26,11 @@ node;
 
 struct node* createnode(void)
 {
-  struct node* root = malloc(sizeof(struct node));
+  node* root = malloc(sizeof(struct node));
+  root -> word = false;
   for(int x = 0; x < NUMOFLETTERS; x++ )
   {
-    root -> children[x] = 0;
+    root -> children[x] = NULL;
   }
   return root;
 }
@@ -73,7 +74,7 @@ bool load(const char* dictionary)
     {
       if (strcmp(APOSTROPHE, &line[x]) == 0)
       {
-        if(trie -> children[26] == 0)
+        if(trie -> children[26] == NULL)
         {
           trie -> children[26] = alt;
           trie = alt;
@@ -86,7 +87,7 @@ bool load(const char* dictionary)
       }
       else
       {
-        if (trie -> children[(97 - line[x])] == 0)
+        if (trie -> children[(97 - line[x])] == NULL)
         {
           trie -> children[(97- line[x])] = alt;
           trie = alt;

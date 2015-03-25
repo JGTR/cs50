@@ -69,8 +69,10 @@ bool load(const char* dictionary)
     {
       if (strcmp(APOSTROPHE, &line[x]) == 0)
       {
-        if(trie -> children[26] == NULL){
+        if(trie -> children[26] == NULL)
+        {
           trie -> children[26] = alt;
+          trie = alt;
         }
       }
       else if (line[x] == '\0')
@@ -83,11 +85,11 @@ bool load(const char* dictionary)
         if (trie -> children[(97 - line[x])] == NULL)
         {
           trie -> children[(97- line[x])] = alt;
+          trie = alt;
         }
           
         // printf("%d\n", (line[x] - 97) );
       }
-      trie = alt;
     } 
   }
 

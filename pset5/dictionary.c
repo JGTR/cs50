@@ -48,6 +48,7 @@ bool load(const char* dictionary)
   struct node *root = createnode();
 
   FILE* dfile = fopen(dictionary, "r");
+
   if (dfile == NULL){
     return false;
   }
@@ -68,7 +69,9 @@ bool load(const char* dictionary)
     {
       if (strcmp(APOSTROPHE, &line[x]) == 0)
       {
-        trie -> children[26] = alt;
+        if(trie -> children[26] == NULL){
+          trie -> children[26] = alt;
+        }
       }
       else if (line[x] == '\0')
       {
@@ -77,7 +80,11 @@ bool load(const char* dictionary)
       }
       else
       {
-        trie -> children[(97 - line[x])] = alt;
+        if (trie -> children[(97 - line[x])] == NULL)
+        {
+          trie -> children[(97- line[x])] = alt;
+        }
+          
         // printf("%d\n", (line[x] - 97) );
       }
       trie = alt;

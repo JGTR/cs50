@@ -27,7 +27,7 @@ node;
 struct node* createnode(void)
 {
   struct node* root = malloc(sizeof(struct node));
-  for(int x = 0; x < LENGTH; x++ )
+  for(int x = 0; x < NUMOFLETTERS; x++ )
   {
     root -> children[x] = 0;
   }

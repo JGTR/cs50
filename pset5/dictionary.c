@@ -65,26 +65,26 @@ bool load(const char* dictionary)
 
     node *trie = root;
     int size = strlen(line);
-    node *alt = createnode();
 
     strtok(line, "\n");
     // printf("%s\n", line);
 
     for(int x = 0; x < size; x++)
     {
+      node *alt = createnode();
       if (strcmp(APOSTROPHE, &line[x]) == 0)
       {
         if(trie -> children[26] == NULL)
         {
           trie -> children[26] = alt;
           trie = trie->children[26];
-          free(alt);
         }
       }
       else if (line[x] == '\0')
       {
         trie -> word = true;
         count++;
+        break;
       }
       else
       {
@@ -92,7 +92,6 @@ bool load(const char* dictionary)
         {
           trie -> children[(97- line[x])] = alt;
           trie = trie -> children[(97- line[x])];
-          free(alt);
         }
         // printf("%d\n", (line[x] - 97) );
       }

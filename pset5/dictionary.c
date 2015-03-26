@@ -121,12 +121,9 @@ bool load(const char* dictionary)
         // Increase the count of words
         count++;
         // Exit the loop
-        break;
       }
     } 
   }
-
-  printf("%d\n", count);
   fclose(dfile);
   return true;
 }
@@ -136,8 +133,7 @@ bool load(const char* dictionary)
  */
 unsigned int size(void)
 {
-  // TODO
-  return 0;
+  return count;
 }
 
 /**

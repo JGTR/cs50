@@ -26,7 +26,7 @@ node;
 
 struct node* createnode(void)
 {
-  node* root = malloc(sizeof(struct node));
+  struct node* root = malloc(sizeof(struct node));
   root -> word = false;
   for(int x = 0; x < NUMOFLETTERS; x++ )
   {
@@ -50,7 +50,7 @@ bool check(const char* word)
 bool load(const char* dictionary)
 {
   char line[sizeof(char)*LENGTH];
-  struct node *root = createnode();
+  struct node* root = createnode();
 
   FILE* dfile = fopen(dictionary, "r");
 
@@ -63,7 +63,7 @@ bool load(const char* dictionary)
   while(fgets(line, sizeof(line), dfile) != NULL)
   {
 
-    node *trie = root;
+    struct node* trie = root;
     int size = strlen(line);
 
     strtok(line, "\n");
@@ -71,14 +71,13 @@ bool load(const char* dictionary)
 
     for(int x = 0; x < size; x++)
     {
-      node *alt = createnode();
       if (strcmp(APOSTROPHE, &line[x]) == 0)
       {
         if(trie -> children[26] == NULL)
         {
-          trie -> children[26] = alt;
-          trie = trie->children[26];
+          trie -> children[26] = createnode();
         }
+        trie = trie->children[26];
       }
       else if (line[x] == '\0')
       {
@@ -90,7 +89,7 @@ bool load(const char* dictionary)
       {
         if (trie -> children[(97 - line[x])] == NULL)
         {
-          trie -> children[(97- line[x])] = alt;
+          trie -> children[(97- line[x])] = createnode();
           trie = trie -> children[(97- line[x])];
         }
         // printf("%d\n", (line[x] - 97) );

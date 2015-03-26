@@ -19,6 +19,7 @@
 
 // Global variable to count number of words
 int count = 0;
+struct node* root = NULL;
 
 typedef struct node
   {
@@ -29,10 +30,10 @@ node;
 
 struct node* createnode(void)
 {
-  struct node* root = malloc(sizeof(struct node));
-  root -> word = false;
-  memset(root -> children, 0, sizeof(struct node));
-  return root;
+  struct node* r = malloc(sizeof(struct node));
+  r -> word = false;
+  // memset(r -> children, 0, sizeof(struct node));
+  return r;
 }
 
 /**
@@ -40,7 +41,55 @@ struct node* createnode(void)
  */
 bool check(const char* word)
 {
-  // TODO
+  // Get size of word
+  int size = strlen(word);
+  printf("%d\n", size);
+
+  char tocheck[size];
+  memset(tocheck, '\0', sizeof(tocheck));
+  strcpy(tocheck, word);
+
+  // Ensure word is all lower case
+  for (int x = 0; x < size; x++)
+            tocheck[x] = tolower(tocheck[x]);
+
+  // printf("%s\n", tocheck);
+
+  struct node* trie = root;
+
+  // Go through char by char and compare to node
+  for(int i = 0, address = 0; i < size; i++)
+  {
+    // Determine position of char
+    if(tocheck[i] == 39)
+    {
+      address = NUMOFLETTERS - 1;
+    }
+    else
+    {
+      address = (tocheck[i] - 97);
+    }
+  
+
+    // Traverse trie
+
+      // If the word is set to true, we have our answer
+    if (trie -> word)
+    {
+      return true;
+    }
+    // Check h
+    else if ((trie -> children[i]) != 0)
+    {
+      printf("Not null: %c\n", tocheck[i]);
+      trie = trie -> children[i];
+    }
+    else if ((trie -> children[1]) == 0)
+    {
+      printf("Null: %c\n", tocheck[i]);
+      return false;
+    }
+  }
   return false;
 }
 
@@ -53,7 +102,7 @@ bool load(const char* dictionary)
   char line[sizeof(char)*LENGTH];
   
   // Creat root node
-  struct node* root = createnode();
+  root = createnode();
 
   // Create file pointer and open dictionary file
   FILE* dfile = fopen(dictionary, "r");
@@ -88,10 +137,12 @@ bool load(const char* dictionary)
       if (39 == line[x])
       {
         // Check if the node does not exist.
-        if (trie -> children[NUMOFLETTERS - 1] == 0)
+        if (trie -> children[NUMOFLETTERS - 1] == NULL)
         {
           // Create new node
           trie -> children[NUMOFLETTERS - 1] = createnode();
+          // printf("New apostrophe node. \n");
+          // printf("%d\n", (int)&trie);
         }
         // Traverse to the next node
         trie = trie -> children[NUMOFLETTERS - 1];
@@ -103,10 +154,12 @@ bool load(const char* dictionary)
         // Calculate the position of the char in the array of letters from a to z
         int address = (line[x] - 97);
         // Check if the node does not exist
-        if (trie -> children[address] == 0)
+        if (trie -> children[address] == NULL)
         {
           // Create the new node at the right element in the children array
           trie -> children[address] = createnode();
+          // printf("New node for address: %d. \n", address);
+          // printf("%p\n", (void*) trie->children[address]);
         }
         // Traverse to the next node
         trie = trie -> children[address];

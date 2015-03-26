@@ -7,6 +7,7 @@
  * Implements a dictionary's functionality.
  ***************************************************************************/
 
+#include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -15,7 +16,9 @@
 #include "dictionary.h"
 
 #define NUMOFLETTERS 27
-#define APOSTROPHE "\'"
+
+// Global variable to count number of words
+int count = 0;
 
 typedef struct node
   {
@@ -28,10 +31,7 @@ struct node* createnode(void)
 {
   struct node* root = malloc(sizeof(struct node));
   root -> word = false;
-  for(int x = 0; x < NUMOFLETTERS; x++ )
-  {
-    root -> children[x] = NULL;
-  }
+  memset(root -> children, 0, sizeof(struct node));
   return root;
 }
 
@@ -49,50 +49,79 @@ bool check(const char* word)
  */
 bool load(const char* dictionary)
 {
+  // Create array of chars to hold array
   char line[sizeof(char)*LENGTH];
+  
+  // Creat root node
   struct node* root = createnode();
 
+  // Create file pointer and open dictionary file
   FILE* dfile = fopen(dictionary, "r");
 
+  // Error out if the file cannot be opend
   if (dfile == NULL){
     return false;
   }
 
-  int count = 0;
-
-  while(fgets(line, sizeof(line), dfile) != NULL)
+  while(fgets(line, LENGTH, dfile) != NULL)
   {
 
+    // Create trie node and set it to root
     struct node* trie = root;
+
+    // Removes line break characters from the line
+    strtok(line, "\n");
+
+    // Determine the size of the line
     int size = strlen(line);
 
-    strtok(line, "\n");
-    // printf("%s\n", line);
+    // Ensure all chars are lower case
+    for (int x = 0; x < size; x++)
+            line[x] = tolower(line[x]);
 
+    // Iterate through every char of the line
     for(int x = 0; x < size; x++)
     {
-      if (strcmp(APOSTROPHE, &line[x]) == 0)
+      // printf("%c\n", line[x]);
+
+      // Special logic for apostrophes
+      if (39 == line[x])
       {
-        if(trie -> children[26] == NULL)
+        // Check if the node does not exist.
+        if (trie -> children[NUMOFLETTERS - 1] == 0)
         {
-          trie -> children[26] = createnode();
+          // Create new node
+          trie -> children[NUMOFLETTERS - 1] = createnode();
         }
-        trie = trie->children[26];
+        // Traverse to the next node
+        trie = trie -> children[NUMOFLETTERS - 1];
       }
-      else if (line[x] == '\0')
+
+      // Ensure that the current char is not a terminator
+      else if (line[x] != '\0')
       {
-        trie -> word = true;
-        count++;
-        break;
-      }
-      else
-      {
-        if (trie -> children[(97 - line[x])] == NULL)
+        // Calculate the position of the char in the array of letters from a to z
+        int address = (line[x] - 97);
+        // Check if the node does not exist
+        if (trie -> children[address] == 0)
         {
-          trie -> children[(97- line[x])] = createnode();
-          trie = trie -> children[(97- line[x])];
+          // Create the new node at the right element in the children array
+          trie -> children[address] = createnode();
         }
+        // Traverse to the next node
+        trie = trie -> children[address];
         // printf("%d\n", (line[x] - 97) );
+      }
+
+      // If the next char is a terminator, we know we have our word
+      if (line[x+1] == '\0')
+      {
+        // Set the word to true
+        trie -> word = true;
+        // Increase the count of words
+        count++;
+        // Exit the loop
+        break;
       }
     } 
   }

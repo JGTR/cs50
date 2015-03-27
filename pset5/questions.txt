@@ -12,11 +12,10 @@
 
 6.  The parameters passed to load and check are declared using const because they are not allowed to change. This helps the program deal with these paramteres with optimum efficiency.
 
-
 7.  I used a trie. My node is constituted by an array of pointers that represent the chars a to z plus an apostrophe. The node also has a word boolean that helps determine the ends of a character sequence that makes up a word.
 
-8.  It took a while to get it to work. Yet I tested this on a much smaller dictionary, and had not fully implemented the unload so I could not see the speed. Once I finished implementing the main functions, the program seems to perform at 0.09 ms, which is a little faster than the CS50 example. However, my unload function is not working fully and this shaves time.
+8.  It took a while to get it to work. Yet I tested this on a much smaller dictionary, and had not fully implemented the unload so I could not see the speed. Once I finished implementing the main functions, the program seems to perform at 0.14 ms, which is a little slower than the CS50 example, but not too bad. I am more worried with a deviation of 3 misspellings from the CS50 speller program on the austin powers text (641 is mine, vs 644 for CS50). This likely means I have some mistake in the creation or parsing of the words and how I handle the edge cases.
 
-9. I made many changes throughout, thinking about how to reduce any looping to the bare minimum. That was the main focus of the effort in code design.
+9. I made many changes throughout, thinking about how to reduce any looping to the bare minimum. That was the main focus of the effort in code design. If I had more time I would swap out the fgets method for fgetc -- this would eliminate an iteration of the size of the word, and make the program faster.
 
-10. Yes, I have not finalized the base case for the recursive unload function. This means that the unload does not work properly.
+10. Yes, I think my check algorithm is not clean. I would have also liked to create more functions to disaggregate the problem. However, struggling with pointers and return values, as well as the cumbersome function declaration in headaer files discouraged me to do this. Looking at all this stream of consciousness code is not easy to work with and it is easy to get lost in the syntax and lose the key components of the logic. I also think that I add some slowness in having to repeat each char from the line gotten by fgets instead of fgetc. This means that I add an iteration step that is fully unnecessary and slows the program down. I think that may have been the main point.

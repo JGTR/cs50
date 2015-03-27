@@ -15,6 +15,7 @@
 // maximum length for a word
 // (e.g., pneumonoultramicroscopicsilicovolcanoconiosis)
 #define LENGTH 45
+#define NUMOFLETTERS 27
 
 /**
  * Returns true if word is in dictionary else false.
@@ -35,5 +36,18 @@ unsigned int size(void);
  * Unloads dictionary from memory.  Returns true if successful else false.
  */
 bool unload(void);
+
+typedef struct node
+  {
+    bool word;
+    struct node* children[NUMOFLETTERS];
+  }
+  node;
+
+/**
+ * Recursive function to help unloading dictionary
+ */
+
+void releaseNode(node* startNode);
 
 #endif // DICTIONARY_H

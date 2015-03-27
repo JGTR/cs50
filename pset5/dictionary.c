@@ -15,18 +15,26 @@
 
 #include "dictionary.h"
 
-#define NUMOFLETTERS 27
-
 // Global variable to count number of words
 int count = 0;
 struct node* root;
 
-typedef struct node
+
+void releaseNode(node* startNode)
+{
+  node* trie = startNode;
+  for (int x = 0; x < NUMOFLETTERS; x++)
   {
-    bool word;
-    struct node* children[NUMOFLETTERS];
+    if (trie -> children[x] != NULL)
+    {
+      releaseNode(trie);
+    }
+    else if (trie -> children[x] == NULL)
+    {
+
+    }
   }
-node;
+}
 
 struct node* createnode(void)
 {
@@ -56,8 +64,7 @@ bool check(const char* word)
   for (int x = 0; x < size; x++)
     tocheck[x] = tolower(tocheck[x]);
 
-  // printf("Checking: %s\n", tocheck);
-
+  // Retrieve the trie
   node* trie = root;
 
   // Go through char by char and compare to node
@@ -184,6 +191,25 @@ unsigned int size(void)
  */
 bool unload(void)
 {
-  // TODO
+  // Retrieve the trie
+  node* trie = root;
+
+  // Start with the left-most non-null node and probe as deeply as possible.
+  for(int x = 0; x < NUMOFLETTERS; x++)
+  {
+    trie = trie -> children[x];
+    releaseNode(trie);  
+  }
+  
+
+  if (root == NULL)
+  {
+    return true;
+  }
+  else
+  {
+    free(root);
+    return true;
+  }
   return false;
 }

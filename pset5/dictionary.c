@@ -23,10 +23,11 @@ struct node* root;
 void releaseNode(node* startNode)
 {
   node* trie = startNode;
-  for (int x = 0; x < NUMOFLETTERS; x++)
+  for (int x = 0; x < NUMOFLETTERS - 1; x++)
   {
     if (trie -> children[x] != NULL)
     {
+      trie = trie -> children[x];
       releaseNode(trie);
     }
     else if (trie -> children[x] == NULL)
@@ -34,7 +35,6 @@ void releaseNode(node* startNode)
 
     }
   }
-  free(trie);
 }
 
 struct node* createnode(void)
@@ -198,8 +198,11 @@ bool unload(void)
   // Start with the left-most non-null node and probe as deeply as possible.
   for(int x = 0; x < NUMOFLETTERS; x++)
   {
+    if (trie -> children[x] != NULL)
+    {
     trie = trie -> children[x];
     releaseNode(trie);  
+    }
   }
 
   if (root == NULL)

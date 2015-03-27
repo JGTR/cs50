@@ -34,13 +34,14 @@ void releaseNode(node* startNode)
 
     }
   }
+  free(trie);
 }
 
 struct node* createnode(void)
 {
   struct node* r = malloc(sizeof(struct node));
   r -> word = false;
-  memset(r -> children, 0, sizeof(struct node));
+  memset(r, 0, sizeof(struct node));
   return r;
 }
 

@@ -20,26 +20,20 @@ int count = 0;
 struct node* root;
 
 
-void releaseNode(node* startNode)
+bool releaseNode(node* trie)
 {
-  // Get node
-  node* trie = startNode;
 
-  // Iterate through all children
-  for (int x = 0; x < NUMOFLETTERS - 1; x++)
+  // Start with the left-most non-null node and probe as deeply as possible.
+  for(int x = 0; x < NUMOFLETTERS; x++)
   {
-    // Target nodes that have been allocated
     if (trie -> children[x] != NULL)
     {
-      // Travel to the non-null node
-      trie = trie -> children[x];
-      releaseNode(trie);
-    }
-    else if (trie -> children[x] == NULL)
-    {
-      // Base case should probably go here
+    releaseNode(trie -> children[x]);  
     }
   }
+
+  free(trie);
+  return true;
 }
 
 struct node* createnode(void)
@@ -197,27 +191,13 @@ unsigned int size(void)
  */
 bool unload(void)
 {
-  // Retrieve the trie
-  node* trie = root;
 
-  // Start with the left-most non-null node and probe as deeply as possible.
-  for(int x = 0; x < NUMOFLETTERS; x++)
-  {
-    if (trie -> children[x] != NULL)
-    {
-    trie = trie -> children[x];
-    releaseNode(trie);  
-    }
-  }
-
-  if (root == NULL)
+  if (releaseNode(root))
   {
     return true;
   }
   else
   {
-    free(root);
-    return true;
+    return false;
   }
-  return false;
 }

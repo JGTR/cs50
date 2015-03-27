@@ -48,6 +48,6 @@ typedef struct node
  * Recursive function to help unloading dictionary
  */
 
-void releaseNode(node* startNode);
+bool releaseNode(node* startNode);
 
 #endif // DICTIONARY_H

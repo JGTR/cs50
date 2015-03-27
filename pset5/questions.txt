@@ -1,11 +1,22 @@
-0.  TODO
-1.  TODO
-2.  TODO
-3.  TODO
-4.  TODO
-5.  TODO
-6.  TODO
-7.  TODO
-8.  TODO
-9.  TODO
-10. TODO
+0.  It is the longest word in the English language, also known as silicosis.
+
+1.  Getrusage returns information about all the resources used by the current thread. There is a structure of detailed information returned by the function. An example: is the total time spent executing the processes. It can be used to benchmark performance.
+
+2.  The struct has 16 members.
+
+3.  Before and after are passed to getrusage to determine the resource use at the point in time before and after the event that we want to measure. This allows the program to then use the calculate function to determine the contribution of the event to resource usage and time consumed by the event's process.
+
+4.  The section's for loop is initialized equating an int value to the result of fgetc(fp), this function gets a character from a stream until the End of File (EOF). The stream is then incremented character by character. The characters are then filtered so that they are alphanumeric or apostrophes, and to filter out spaces and line breaks and so on. The characters are used to constitute words that are shorter than the max length. The rest of the loop goes into checking each word against the dictionary.
+
+5.  Fgetc provides much more control over what characters are allowed to filter through to the constituted string. Usign a string by string reading function, such as fscanf would introduce problems where the string may contain undesirable characters, and need to be subsequently corrected. Fgetc is probably a safer and simpler way to process the stream.
+
+6.  The parameters passed to load and check are declared using const because they are not allowed to change. This helps the program deal with these paramteres with optimum efficiency.
+
+
+7.  I used a trie. My node is constituted by an array of pointers that represent the chars a to z plus an apostrophe. The node also has a word boolean that helps determine the ends of a character sequence that makes up a word.
+
+8.  It took a while to get it to work. Yet I tested this on a much smaller dictionary, and had not fully implemented the unload so I could not see the speed. Once I finished implementing the main functions, the program seems to perform at 0.09 ms, which is a little faster than the CS50 example. However, my unload function is not working fully and this shaves time.
+
+9. I made many changes throughout, thinking about how to reduce any looping to the bare minimum. That was the main focus of the effort in code design.
+
+10. Yes, I have not finalized the base case for the recursive unload function. This means that the unload does not work properly.

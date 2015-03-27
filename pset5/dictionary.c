@@ -40,7 +40,7 @@ struct node* createnode(void)
 {
   struct node* r = malloc(sizeof(struct node));
   r -> word = false;
-  // memset(r -> children, 0, sizeof(struct node));
+  memset(r -> children, 0, sizeof(struct node));
   return r;
 }
 
@@ -200,7 +200,6 @@ bool unload(void)
     trie = trie -> children[x];
     releaseNode(trie);  
   }
-  
 
   if (root == NULL)
   {

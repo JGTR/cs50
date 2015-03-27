@@ -22,17 +22,22 @@ struct node* root;
 
 void releaseNode(node* startNode)
 {
+  // Get node
   node* trie = startNode;
+
+  // Iterate through all children
   for (int x = 0; x < NUMOFLETTERS - 1; x++)
   {
+    // Target nodes that have been allocated
     if (trie -> children[x] != NULL)
     {
+      // Travel to the non-null node
       trie = trie -> children[x];
       releaseNode(trie);
     }
     else if (trie -> children[x] == NULL)
     {
-
+      // Base case should probably go here
     }
   }
 }

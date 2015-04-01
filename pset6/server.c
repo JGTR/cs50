@@ -45,6 +45,7 @@ ssize_t parse(void);
 void reset(void);
 void start(short port, const char* path);
 void stop(void);
+char* getQuery(char* line);
 
 // server's root
 char* root = NULL;
@@ -60,6 +61,26 @@ FILE* file = NULL;
 
 // buffer for response-body
 octet* body = NULL;
+
+char* getQuery(char* line)
+{   
+  char* query;
+  query = strtok(line, "?");
+  query = strtok(NULL, "HTTP/1.1");
+  if (query != NULL && strlen(query) >= 1)
+  {
+    char last = query[strlen(query-1)];
+    if (strcmp(&last, "\0") != 0)
+    {
+      query[strlen(query)] = '\0';
+    }
+    return query;
+  }
+  else
+  {
+    return "\0";
+  }
+}
 
 int main(int argc, char* argv[])
 {
@@ -148,7 +169,9 @@ int main(int argc, char* argv[])
             // TODO: validate request-line
 
             // TODO: extract query from request-target
-            char query[] = "TODO";
+            char query[] = "";
+            strcpy(query, getQuery(line));
+            printf("Query: %s is %i chars long\n", query, strlen(query));
 
             // TODO: concatenate root and absolute-path
             char path[] = "TODO";

@@ -46,6 +46,8 @@ void reset(void);
 void start(short port, const char* path);
 void stop(void);
 char* getQuery(char* line);
+char* concatenatePaths(char* abs_path);
+char* getExtension(char* abs_path);
 
 // server's root
 char* root = NULL;
@@ -62,24 +64,39 @@ FILE* file = NULL;
 // buffer for response-body
 octet* body = NULL;
 
+// Extracts the query from the line
 char* getQuery(char* line)
 {   
   char* query;
   query = strtok(line, "?");
   query = strtok(NULL, "HTTP/1.1");
-  if (query != NULL && strlen(query) >= 1)
+  if (query != NULL)
   {
-    char last = query[strlen(query-1)];
-    if (strcmp(&last, "\0") != 0)
-    {
-      query[strlen(query)] = '\0';
-    }
     return query;
   }
   else
   {
     return "\0";
   }
+}
+
+// Concatenates the root and absolute path into one path
+char* concatenatePaths(char* abs_path)
+{
+  char* concatenated = root;
+  strcat(concatenated, "/");
+  strcat(concatenated, abs_path);
+  return concatenated;
+}
+
+// Extracts the extension from a given path
+char* getExtension(char* abs_path)
+{
+  char* extension;
+  extension = strtok(abs_path, ".");
+  extension = strtok(NULL, ".");
+  printf("Extension is: %s\n", extension);
+  return extension;
 }
 
 int main(int argc, char* argv[])
@@ -164,24 +181,68 @@ int main(int argc, char* argv[])
             line[needle - haystack + 2] = '\0';
 
             // log request-line
-            printf("%s", line);
+            printf("%s\n", line);
 
             // TODO: validate request-line
+            if(strstr(line, "GET") == NULL)
+            {
+              error(405);
+            }
+            if (line[4] != '/')
+            {
+              error(501);
+            }
+            if (strchr(line, (int) "\"") != NULL)
+            {
+              error(400);
+            }
+            if (strstr(line, "HTTP/1.1") == NULL)
+            {
+              error(505);
+            }
+
+            char extension_check[strlen(line)];
+            strcpy(extension_check, line);
+            
+            char* for_extension;
+            for_extension = strtok(extension_check, "GET /");
+            for_extension = strtok(for_extension, "?");
+            strcpy(extension_check, for_extension);
+
+            if(strstr(extension_check, ".") == NULL)
+            {
+              error(501);
+            }
 
             // TODO: extract query from request-target
-            char query[] = "";
+
+            char* start = strstr(line, "?");
+            char* end = strstr(line, "HTTP/1.1");
+
+            char query[end - start];
+            printf("%s\n", line);
             strcpy(query, getQuery(line));
-            printf("Query: %s is %i chars long\n", query, strlen(query));
 
             // TODO: concatenate root and absolute-path
-            char path[] = "TODO";
+            char path[strlen(root) + strlen(extension_check) + 1];
+            strcpy(path, concatenatePaths(extension_check));
+            printf("Path: %s\n", path);
 
             // TODO: ensure path exists
+            if (access(path, F_OK) != 0)
+            {
+                error(404);
+            }
             
             // TODO: ensure path is readable
+            if (access(path, R_OK) != 0)
+            {
+                error(403);
+            }
  
             // TODO: extract path's extension
-            char extension[] = "TODO";
+            char extension[] = "";
+            strcpy(extension, getExtension(extension_check));
 
             // dynamic content
             if (strcasecmp("php", extension) == 0)
@@ -228,6 +289,15 @@ int main(int argc, char* argv[])
                 {
                     continue;
                 }
+                if (dprintf(cfd, "Content-Type: %s\r\n", extension) < 0)
+                {
+                    continue;
+                }
+                if (dprintf(cfd, "\r\n") < 0)
+                {
+                  continue;
+                }
+
                 if (write(cfd, body, size) == -1)
                 {
                     continue;
@@ -335,37 +405,37 @@ bool error(unsigned short code)
     // respond with Status-Line
     if (dprintf(cfd, "HTTP/1.1 %i %s\r\n", code, phrase) < 0)
     {
-        return false;
+      return false;
     }
 
     // respond with Connection header
     if (dprintf(cfd, "Connection: close\r\n") < 0)
     {
-        return false;
+      return false;
     }
 
     // respond with Content-Length header
     if (dprintf(cfd, "Content-Length: %i\r\n", length) < 0)
     {
-        return false;
+      return false;
     }
 
     // respond with Content-Type header
     if (dprintf(cfd, "Content-Type: text/html\r\n") < 0)
     {
-        return false;
+      return false;
     }
 
     // respond with CRLF
     if (dprintf(cfd, "\r\n") < 0)
     {
-        return false;
+      return false;
     }
 
     // respond with message-body
     if (write(cfd, content, length) == -1)
     {
-        return false;
+      return false;
     }
 
     // announce Response-Line
@@ -463,6 +533,29 @@ void handler(int signal)
 const char* lookup(const char* extension)
 {
     // TODO
+    if (extension != NULL)
+    {
+      if (strcasecmp("css", extension) == 0)
+        return "text/css";
+
+      else if (strcasecmp("html", extension) == 0)
+        return "text/html";
+
+      else if (strcasecmp("gif", extension) == 0)
+        return "image/gif";
+
+      else if (strcasecmp("ico", extension) == 0)
+        return "image/x-icon";
+
+      else if (strcasecmp("jpg", extension) == 0)
+        return "image/jpeg";
+
+      else if (strcasecmp("js", extension) == 0)
+        return "text/javascript";
+
+      else if (strcasecmp("png", extension) == 0)
+        return "image/png";
+    }
     return NULL;
 }
 

@@ -218,6 +218,9 @@
             // render header
             require("../templates/header.php");
 
+            // render nav
+            require ("../templates/nav.php");
+
             // render template
             require("../templates/$template");
 
@@ -232,4 +235,62 @@
         }
     }
 
+    function transact($symbol, $number_of_shares, $type)
+    {
+        // Get data from Yahoo Finance
+        $lookup = lookup($symbol);
+
+        // Setup key variables
+        $price = $lookup["price"];
+        $number_of_shares = $number_of_shares;
+        $amount = $lookup["price"] * $number_of_shares;
+        $user_id = user_id();
+        $cash = get_user_cash();
+
+        // Ensure user has enough funds;
+        if($type == 'buy' && $amount > $cash)
+        {
+            // Exit method if the user lacks sufficient funds and they want to buy
+            return false;
+        }
+
+        else
+        {
+            // Determine new amount of cash for user
+            if ($type == 'buy')
+            {
+                $cash = $cash - $amount;
+                $amount = (-1)*$amount;
+                $positive_amount = 0;
+            }
+            else
+            {
+                $cash = $cash + $amount;
+                $number_of_shares = (-1)*$number_of_shares;
+            }
+
+            // Create new transaction
+            query("INSERT INTO transactions (user_id, type, symbol, price, number_of_shares, amount) VALUES (?, ?, ?, ?, ?, ?)", $user_id, $type, $symbol, $price, $number_of_shares, $amount);
+            query("UPDATE users SET cash = ? WHERE id = ?", $cash, $user_id);
+        }
+
+    }
+
+    function get_user_cash()
+    {
+        $user_id = user_id();
+        $user = query("SELECT * FROM users where id = ?", $user_id)[0];
+        return $user["cash"]; 
+    }
+
+    function user_id(){
+        return $_SESSION["id"];
+    }
+
+    function add_funds($funds)
+    {
+        $cash = get_user_cash();
+        $cash = $cash + $funds;
+        query("UPDATE users SET cash = ? WHERE id = ?", $cash, user_id());
+    }
 ?>

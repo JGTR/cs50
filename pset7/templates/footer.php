@@ -1,6 +1,7 @@
+            	</div>
             </div>
 
-            <div id="bottom">
+            <div id="bottom" style="text-align: center;">
                 Copyright &#169; John Harvard
             </div>
 

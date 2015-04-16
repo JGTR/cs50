@@ -36,6 +36,18 @@ html, body, #map-canvas, .container-fluid
     top: 28px;
 }
 
+#button
+{
+    /* distance from left edge of viewport */
+    left: 100px;
+
+    /* position form "absolutely" where we want it */
+    position: absolute;
+
+    /* distance from top edge of viewport */
+    top: 80px;
+}
+
 /* stylize text box */
 #q
 {

@@ -16,6 +16,10 @@ var markers = [];
 // info window
 var info = new google.maps.InfoWindow();
 
+// Store user's geolocation
+var myposition = 0;
+
+
 // execute when the DOM is fully loaded
 $(function() {
 
@@ -43,8 +47,11 @@ $(function() {
 
     ];
 
+
     // options for map
     // https://developers.google.com/maps/documentation/javascript/reference#MapOptions
+
+
     var options = {
         center: {lat: 42.3770, lng: -71.1256}, // Cambridge, Massachusetts
         disableDefaultUI: true,
@@ -67,12 +74,68 @@ $(function() {
 
 });
 
+function go_to_me(){
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(function(position){
+            var mycurrentLat = position.coords.latitude;
+            var mycurrentLong = position.coords.longitude;
+            myposition = new google.maps.LatLng(mycurrentLat, mycurrentLong);
+            map.setCenter(myposition);
+        });
+    }
+}
+
 /**
  * Adds marker for place to map.
  */
 function addMarker(place)
 {
     // TODO
+    var lat = place["latitude"];
+    var lon = place["longitude"];
+    var markerLatLong = new google.maps.LatLng(lat, lon);
+    var label = place["place_name"] + ", " + place["admin_name1"];
+    var icon = "img/icon.png";
+
+    var listItems = [];
+
+    marker = new MarkerWithLabel({
+        position: markerLatLong,
+        icon: icon,
+        map: map,
+        draggable: false,
+        labelContent: label,
+        labelAnchor: new google.maps.Point(-18, 24),
+        labelInBackground: false
+    });
+
+    markers.push(marker);
+
+    var parameter = "geo="+ place["postal_code"];
+
+    // Create an info window
+    marker.info = new google.maps.InfoWindow({
+        // Set up the ajax loader gif
+        content: "<div id='articles'><img id='loader' src='img/ajax-loader.gif' /></div>"
+    });
+
+    // Add a click listener that will load the articles using ajax.
+    google.maps.event.addListener(marker, "click", function (e){ 
+        
+        marker.info.open(map, this);
+        // Technique adapted from Baer at this link: http://stackoverflow.com/questions/9760328/clearest-way-to-build-html-elements-in-jquery
+        var html = ["<ul>"];
+        // Modify the html and load-in the articles
+        $.getJSON("articles.php", parameter).done(function(data){
+            $.each(data, function(i, item){
+                html.push("<li><a href='"+item.link+"' target='_blank'>"+item.title+"</a></li>");
+            });
+            html.push("</ul>");
+            marker.info.setContent(html.join("\n"));
+        }).fail(function(jqXHR, textStatus, errorThrown){
+            console.log(errorThrown.toString());
+        });
+    });
 }
 
 /**
@@ -106,7 +169,9 @@ function configure()
         source: search,
         templates: {
             empty: "no places found yet",
-            suggestion: _.template("<p>TODO</p>")
+            suggestion: function(data) {
+                return "<p>" + data.place_name + ", " + data.admin_name1 +  " " + data.postal_code + "</p>"
+            } 
         }
     });
 
@@ -157,7 +222,10 @@ function hideInfo()
  */
 function removeMarkers()
 {
-    // TODO
+    _.each(markers, function(marker){
+        marker.setMap(null);
+    });
+
 }
 
 /**
